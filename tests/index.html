@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvenTech — Appliance Inventory Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  --blue-950: #0a1628;
+  --blue-900: #0e1e3d;
+  --blue-800: #1a3360;
+  --blue-700: #1e4080;
+  --blue-600: #1d57b0;
+  --blue-500: #2563eb;
+  --blue-400: #3b82f6;
+  --blue-300: #93c5fd;
+  --blue-100: #dbeafe;
+  --blue-50:  #eff6ff;
+  --white:    #ffffff;
+  --gray-50:  #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --green:    #10b981;
+  --green-bg: #d1fae5;
+  --yellow:   #f59e0b;
+  --yellow-bg:#fef3c7;
+  --red:      #ef4444;
+  --red-bg:   #fee2e2;
+  --orange:   #f97316;
+  --orange-bg:#ffedd5;
+  --purple:   #8b5cf6;
+  --purple-bg:#ede9fe;
+  --sidebar-w: 256px;
+  --topbar-h:  64px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+  --shadow-blue: 0 4px 20px rgba(37,99,235,.25);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-800);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+input, select, button { font-family: inherit; }
+a { text-decoration: none; }
+
+/* ═══════════════════════════════════════
+   LOGIN
+═══════════════════════════════════════ */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  background: var(--white);
+}
+.login-left {
+  flex: 1;
+  background: linear-gradient(145deg, var(--blue-900) 0%, var(--blue-700) 60%, var(--blue-500) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 64px;
+  position: relative;
+  overflow: hidden;
+}
+.login-left::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  top: -100px; right: -100px;
+}
+.login-left::after {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.04);
+  bottom: -60px; left: -60px;
+}
+.login-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 48px; z-index: 1; position: relative; }
+.login-brand-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.2);
+}
+.login-brand-name { font-size: 20px; font-weight: 800; color: var(--white); letter-spacing: -.3px; }
+.login-headline {
+  font-family: 'Instrument Serif', serif;
+  font-size: 44px; line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 20px;
+  z-index: 1; position: relative;
+}
+.login-headline em { font-style: italic; color: var(--blue-300); }
+.login-desc { font-size: 15px; color: rgba(255,255,255,.65); max-width: 360px; line-height: 1.7; z-index: 1; position: relative; }
+.login-features { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; z-index: 1; position: relative; }
+.login-feat { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,.8); font-size: 13px; }
+.login-feat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-300); flex-shrink: 0; }
+
+.login-right {
+  width: 480px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 64px 56px;
+}
+.login-form-title { font-size: 26px; font-weight: 800; color: var(--gray-800); letter-spacing: -.4px; margin-bottom: 6px; }
+.login-form-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 36px; }
+.form-group { width: 100%; margin-bottom: 18px; }
+.form-label { display: block; font-size: 12px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 7px; }
+.form-input {
+  width: 100%; padding: 12px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  font-size: 14px; color: var(--gray-800);
+  background: var(--gray-50);
+  outline: none; transition: all .2s;
+}
+.form-input:focus { border-color: var(--blue-500); background: var(--white); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.login-submit {
+  width: 100%; padding: 14px;
+  background: var(--blue-500); color: var(--white);
+  border: none; border-radius: var(--radius-md);
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: all .2s; margin-top: 4px;
+  box-shadow: var(--shadow-blue);
+}
+.login-submit:hover { background: var(--blue-600); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(37,99,235,.35); }
+.login-submit:active { transform: translateY(0); }
+.login-note { margin-top: 20px; font-size: 12px; color: var(--gray-400); text-align: center; }
+.login-note span { color: var(--blue-500); font-weight: 600; }
+.login-error { display: none; background: var(--red-bg); color: var(--red); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; margin-bottom: 16px; width: 100%; }
+
+/* ═══════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════ */
+#app { display: none; }
+.shell { display: flex; min-height: 100vh; }
+
+/* ═══════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--blue-950);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  z-index: 100; overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,.05);
+}
+.sidebar-header {
+  padding: 20px 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding-bottom: 20px;
+}
+.sidebar-logo { display: flex; align-items: center; gap: 10px; }
+.sidebar-logo-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: var(--blue-500);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  box-shadow: var(--shadow-blue);
+}
+.sidebar-logo-text { font-size: 17px; font-weight: 800; color: var(--white); letter-spacing: -.2px; }
+.sidebar-logo-sub { font-size: 10px; color: rgba(255,255,255,.35); font-weight: 400; margin-top: 1px; }
+
+.nav { flex: 1; padding: 16px 12px; }
+.nav-section-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,.25);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  padding: 10px 8px 6px; margin-top: 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; color: rgba(255,255,255,.5);
+  font-size: 13.5px; font-weight: 500;
+  transition: all .15s; margin-bottom: 2px;
+  position: relative; user-select: none;
+}
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,.06); }
+.nav-item.active {
+  color: var(--white); background: var(--blue-600);
+  box-shadow: 0 2px 12px rgba(37,99,235,.3);
+}
+.nav-icon { font-size: 16px; width: 22px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--red);
+  color: var(--white); font-size: 10px; font-weight: 700;
+  border-radius: 20px; padding: 2px 7px; min-width: 20px; text-align: center;
+}
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.05); margin-bottom: 8px;
+}
+.user-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-300));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--white); flex-shrink: 0;
+}
+.user-name { font-size: 13px; font-weight: 700; color: var(--white); }
+.user-role { font-size: 11px; color: rgba(255,255,255,.35); }
+.logout-btn {
+  width: 100%; padding: 9px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-sm); color: rgba(255,255,255,.45);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.logout-btn:hover { background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.3); color: #fca5a5; }
+
+/* ═══════════════════════════════════════
+   MAIN AREA
+═══════════════════════════════════════ */
+.main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+.topbar {
+  height: var(--topbar-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+.topbar-left .page-breadcrumb { font-size: 12px; color: var(--gray-400); margin-bottom: 2px; }
+.topbar-left .page-name { font-size: 16px; font-weight: 800; color: var(--gray-800); letter-spacing: -.2px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.topbar-btn {
+  width: 38px; height: 38px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; position: relative; transition: all .15s;
+}
+.topbar-btn:hover { border-color: var(--blue-400); background: var(--blue-50); }
+.notif-dot { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; border: 2px solid var(--white); }
+.topbar-user { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--radius-sm); border: 1.5px solid var(--gray-200); cursor: pointer; transition: all .15s; }
+.topbar-user:hover { border-color: var(--blue-400); background: var(--blue-50); }
+.topbar-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-500), var(--blue-300)); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--white); }
+.topbar-uname { font-size: 13px; font-weight: 700; color: var(--gray-700); }
+
+.content { padding: 28px 32px; flex: 1; }
+.page { display: none; animation: fadeUp .25s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════
+   COMPONENTS — COMMON
+═══════════════════════════════════════ */
+.section-title { font-size: 18px; font-weight: 800; color: var(--gray-800); letter-spacing: -.3px; }
+.section-sub { font-size: 13px; color: var(--gray-400); margin-top: 3px; }
+.section-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+
+/* Cards */
+.card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--gray-700); }
+.card-action { font-size: 12px; color: var(--blue-500); font-weight: 600; cursor: pointer; }
+.card-action:hover { color: var(--blue-700); }
+
+/* Stat Cards */
+.stat-grid { display: grid; gap: 16px; margin-bottom: 24px; }
+.stat-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.stat-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.stat-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); padding: 20px 22px;
+  box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-card-accent { position: absolute; top: 0; left: 0; width: 4px; height: 100%; border-radius: 16px 0 0 16px; }
+.stat-icon-wrap {
+  width: 42px; height: 42px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 14px;
+}
+.stat-label { font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.stat-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 8px; }
+.stat-change { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.stat-change.up { color: var(--green); }
+.stat-change.down { color: var(--red); }
+.stat-change.neutral { color: var(--gray-400); }
+
+/* Badges / Pills */
+.pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .2px; }
+.pill-green { background: var(--green-bg); color: #065f46; }
+.pill-yellow { background: var(--yellow-bg); color: #92400e; }
+.pill-red { background: var(--red-bg); color: #991b1b; }
+.pill-orange { background: var(--orange-bg); color: #9a3412; }
+.pill-blue { background: var(--blue-100); color: var(--blue-700); }
+.pill-purple { background: var(--purple-bg); color: #5b21b6; }
+.pill-gray { background: var(--gray-100); color: var(--gray-600); }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; border: 1.5px solid transparent; white-space: nowrap; }
+.btn-primary { background: var(--blue-500); color: var(--white); border-color: var(--blue-500); box-shadow: var(--shadow-blue); }
+.btn-primary:hover { background: var(--blue-600); border-color: var(--blue-600); transform: translateY(-1px); }
+.btn-secondary { background: var(--white); color: var(--gray-700); border-color: var(--gray-200); }
+.btn-secondary:hover { border-color: var(--blue-400); color: var(--blue-600); background: var(--blue-50); }
+.btn-danger { background: var(--red-bg); color: var(--red); border-color: transparent; }
+.btn-danger:hover { background: var(--red); color: var(--white); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-icon { width: 32px; height: 32px; padding: 0; justify-content: center; }
+
+/* Tables */
+.table-container { overflow-x: auto; border-radius: var(--radius-md); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th {
+  padding: 11px 16px; text-align: left;
+  font-size: 11px; font-weight: 700; color: var(--gray-400);
+  text-transform: uppercase; letter-spacing: .6px;
+  background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
+}
+thead th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+thead th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+tbody td { padding: 13px 16px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { transition: background .1s; }
+tbody tr:hover { background: var(--blue-50); }
+.td-main { font-weight: 600; color: var(--gray-800); }
+
+/* Toolbar */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-input {
+  flex: 1; min-width: 200px;
+  padding: 9px 14px 9px 36px;
+  border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--gray-800); background: var(--white);
+  outline: none; transition: all .2s; position: relative;
+}
+.search-input:focus { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+.search-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-wrap::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+.filter-select {
+  padding: 9px 14px; border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm); font-size: 13px; color: var(--gray-700);
+  background: var(--white); outline: none; cursor: pointer; transition: all .2s;
+  font-family: inherit; font-weight: 500;
+}
+.filter-select:focus { border-color: var(--blue-500); }
+
+/* Form elements */
+.form-group-inline { margin-bottom: 16px; }
+.form-label-inline { display: block; font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.form-ctrl { width: 100%; padding: 10px 14px; border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 13px; color: var(--gray-800); background: var(--white); outline: none; transition: all .2s; font-family: inherit; }
+.form-ctrl:focus { border-color: var(--blue-500); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+
+/* ═══════════════════════════════════════
+   PAGE: DASHBOARD
+═══════════════════════════════════════ */
+.welcome-banner {
+  background: linear-gradient(120deg, var(--blue-900) 0%, var(--blue-600) 100%);
+  border-radius: var(--radius-xl); padding: 28px 32px;
+  margin-bottom: 24px; position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute; width: 300px; height: 300px;
+  border-radius: 50%; background: rgba(255,255,255,.05);
+  top: -80px; right: -40px;
+}
+.welcome-banner::after {
+  content: '';
+  position: absolute; width: 180px; height: 180px;
+  border-radius: 50%; background: rgba(255,255,255,.04);
+  bottom: -50px; right: 120px;
+}
+.welcome-text .greeting { font-size: 13px; color: rgba(255,255,255,.6); margin-bottom: 6px; }
+.welcome-text .name { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--white); line-height: 1.2; }
+.welcome-text .name span { font-style: italic; color: var(--blue-300); }
+.welcome-text .sub { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 6px; }
+.welcome-stats { display: flex; gap: 24px; z-index: 1; }
+.welcome-stat { text-align: center; }
+.welcome-stat .val { font-size: 26px; font-weight: 800; color: var(--white); letter-spacing: -1px; }
+.welcome-stat .lbl { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+.dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+.dashboard-grid-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Bar Chart */
+.bar-chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 120px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+.bar-fill { width: 100%; border-radius: 4px 4px 0 0; transition: opacity .2s; cursor: pointer; min-height: 4px; }
+.bar-fill:hover { opacity: .75; }
+.bar-day { font-size: 10px; color: var(--gray-400); font-weight: 600; }
+.chart-legend { display: flex; gap: 16px; margin-top: 14px; }
+.chart-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray-500); font-weight: 500; }
+.chart-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+/* Donut */
+.donut-section { display: flex; align-items: center; gap: 20px; }
+.donut-chart { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+.donut-chart svg { transform: rotate(-90deg); }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-val { font-size: 20px; font-weight: 800; color: var(--gray-800); line-height: 1; }
+.donut-lbl { font-size: 10px; color: var(--gray-400); font-weight: 600; margin-top: 2px; }
+.donut-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.donut-legend-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+.donut-legend-left { display: flex; align-items: center; gap: 8px; color: var(--gray-600); }
+.donut-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.donut-legend-count { font-weight: 700; color: var(--gray-800); }
+
+/* Activity */
+.activity-feed { display: flex; flex-direction: column; }
+.activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-100); }
+.activity-item:last-child { border-bottom: none; }
+.activity-indicator { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.activity-body { flex: 1; }
+.activity-text { font-size: 13px; color: var(--gray-700); line-height: 1.5; }
+.activity-time { font-size: 11px; color: var(--gray-400); margin-top: 3px; font-weight: 500; }
+
+/* ═══════════════════════════════════════
+   PAGE: ALERTS
+═══════════════════════════════════════ */
+.alert-feed { display: flex; flex-direction: column; gap: 12px; }
+.alert-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md); padding: 18px 20px;
+  display: flex; align-items: flex-start; gap: 14px;
+  border-left: 4px solid; box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s;
+}
+.alert-card:hover { box-shadow: var(--shadow-md); }
+.alert-card.critical { border-left-color: var(--red); }
+.alert-card.warning { border-left-color: var(--yellow); }
+.alert-card.info { border-left-color: var(--blue-400); }
+.alert-card-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.alert-card-content { flex: 1; }
+.alert-card-title { font-size: 14px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px; }
+.alert-card-desc { font-size: 13px; color: var(--gray-500); line-height: 1.6; }
+.alert-card-time { font-size: 11px; color: var(--gray-400); margin-top: 6px; font-weight: 500; }
+.alert-card-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+/* ═══════════════════════════════════════
+   PAGE: ZONES
+═══════════════════════════════════════ */
+.zone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.zone-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: transform .2s, box-shadow .2s;
+}
+.zone-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.zone-card-header { padding: 16px 18px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+.zone-card-name { font-size: 14px; font-weight: 800; color: var(--gray-800); }
+.zone-card-count { font-size: 12px; color: var(--gray-400); font-weight: 600; }
+.zone-card-body { padding: 12px; }
+.shelf-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: var(--radius-sm); font-size: 12px; margin-bottom: 4px; background: var(--gray-50); }
+.shelf-row:last-child { margin-bottom: 0; }
+.shelf-name { color: var(--gray-600); font-weight: 500; }
+.shelf-count { font-weight: 800; color: var(--blue-600); }
+
+/* ═══════════════════════════════════════
+   PAGE: SETTINGS
+═══════════════════════════════════════ */
+.settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+.settings-nav-item { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--gray-500); cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 8px; }
+.settings-nav-item:hover { background: var(--gray-100); color: var(--gray-700); }
+.settings-nav-item.active { background: var(--blue-50); color: var(--blue-600); }
+.settings-panel { display: none; }
+.settings-panel.active { display: block; }
+.settings-section { margin-bottom: 28px; }
+.settings-section-title { font-size: 14px; font-weight: 800; color: var(--gray-700); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--gray-200); }
+.settings-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--gray-100); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info .t-name { font-size: 13px; font-weight: 600; color: var(--gray-700); }
+.toggle-info .t-desc { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+.toggle { width: 42px; height: 24px; border-radius: 20px; background: var(--gray-200); position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0; }
+.toggle.on { background: var(--blue-500); }
+.toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: var(--white); border-radius: 50%; top: 3px; left: 3px; transition: left .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.toggle.on::after { left: 21px; }
+
+/* ═══════════════════════════════════════
+   PAGE: REPORTS
+═══════════════════════════════════════ */
+.report-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+.report-card {
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md); padding: 20px;
+  cursor: pointer; transition: all .2s; box-shadow: var(--shadow-sm);
+}
+.report-card:hover { border-color: var(--blue-400); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.report-card-icon { font-size: 28px; margin-bottom: 12px; }
+.report-card-name { font-size: 13px; font-weight: 700; color: var(--gray-800); margin-bottom: 5px; }
+.report-card-desc { font-size: 12px; color: var(--gray-400); line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════ */
+.empty-state { text-align: center; padding: 48px 24px; color: var(--gray-400); }
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+.empty-state .title { font-size: 15px; font-weight: 700; color: var(--gray-500); margin-bottom: 6px; }
+.empty-state .desc { font-size: 13px; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE UTILITIES
+═══════════════════════════════════════ */
+.divider { height: 1px; background: var(--gray-200); margin: 20px 0; }
+.text-muted { color: var(--gray-400); font-size: 12px; }
+.font-bold { font-weight: 700; }
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.justify-between { justify-content: space-between; }
+.w-full { width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     LOGIN
+════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-brand-icon">📦</div>
+      <div>
+        <div class="login-brand-name">InvenTech</div>
+      </div>
+    </div>
+    <div class="login-headline">
+      Smarter inventory,<br><em>better control.</em>
+    </div>
+    <div class="login-desc">
+      A complete appliance inventory management system built for efficiency, clarity, and reliability — all running locally on your network.
+    </div>
+    <div class="login-features">
+      <div class="login-feat"><div class="login-feat-dot"></div>Real-time stock tracking and monitoring</div>
+      <div class="login-feat"><div class="login-feat-dot"></div>Complete transaction and activity history</div>
+      <div class="login-feat"><div class="login-feat-dot"></div>Zone & shelf location management</div>
+      <div class="login-feat"><div class="login-feat-dot"></div>Automated low stock and defect alerts</div>
+      <div class="login-feat"><div class="login-feat-dot"></div>Role-based access for Admin and Staff</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div style="width:100%;max-width:340px">
+      <div class="login-form-title">Welcome back</div>
+      <div class="login-form-sub">Sign in to access your inventory dashboard</div>
+      <div class="login-error" id="login-error">Please enter both username and password.</div>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" id="login-user" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="Enter your password">
+      </div>
+      <button class="login-submit" onclick="doLogin()">Sign In to InvenTech</button>
+      <p class="login-note">Don't have an account? Contact your <span>System Administrator</span>.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     APP
+════════════════════════════════════ -->
+<div id="app">
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">📦</div>
+          <div>
+            <div class="sidebar-logo-text">InvenTech</div>
+            <div class="sidebar-logo-sub">Appliance IMS v1.0</div>
+          </div>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" data-page="dashboard" onclick="navigate(this)">
+          <span class="nav-icon">🏠</span> Dashboard
+        </div>
+        <div class="nav-section-label">Inventory</div>
+        <div class="nav-item" data-page="appliances" onclick="navigate(this)">
+          <span class="nav-icon">📋</span> Appliances
+        </div>
+        <div class="nav-item" data-page="zones" onclick="navigate(this)">
+          <span class="nav-icon">🗂️</span> Zones & Shelves
+        </div>
+        <div class="nav-section-label">Records</div>
+        <div class="nav-item" data-page="transactions" onclick="navigate(this)">
+          <span class="nav-icon">🔄</span> Transactions
+        </div>
+        <div class="nav-item" data-page="logs" onclick="navigate(this)">
+          <span class="nav-icon">📝</span> Activity Logs
+        </div>
+        <div class="nav-section-label">Monitoring</div>
+        <div class="nav-item" data-page="alerts" onclick="navigate(this)">
+          <span class="nav-icon">🔔</span> Alerts
+          <span class="nav-badge">4</span>
+        </div>
+        <div class="nav-item" data-page="reports" onclick="navigate(this)">
+          <span class="nav-icon">📊</span> Reports
+        </div>
+        <div class="nav-section-label">System</div>
+        <div class="nav-item" data-page="settings" onclick="navigate(this)">
+          <span class="nav-icon">⚙️</span> Settings
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="user-avatar" id="sidebar-avatar">MJ</div>
+          <div>
+            <div class="user-name" id="sidebar-name">Meynard J.</div>
+            <div class="user-role">Administrator</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="doLogout()">
+          <span>🚪</span> Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="page-breadcrumb">InvenTech / <span id="topbar-section">Dashboard</span></div>
+          <div class="page-name" id="topbar-title">Dashboard</div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-btn" onclick="navigate(document.querySelector('[data-page=alerts]'))" title="Alerts">
+            🔔<span class="notif-dot"></span>
+          </div>
+          <div class="topbar-user">
+            <div class="topbar-avatar" id="topbar-avatar">MJ</div>
+            <div class="topbar-uname" id="topbar-name">Meynard J.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- ══════════ DASHBOARD ══════════ -->
+        <div class="page active" id="page-dashboard">
+          <div class="welcome-banner">
+            <div class="welcome-text">
+              <div class="greeting">☀️ Good morning, Administrator</div>
+              <div class="name">Here's your <span>inventory overview</span> for today.</div>
+              <div class="sub">Monday, May 19, 2026 — All systems operational</div>
+            </div>
+            <div class="welcome-stats">
+              <div class="welcome-stat"><div class="val">248</div><div class="lbl">Total Units</div></div>
+              <div class="welcome-stat"><div class="val">14</div><div class="lbl">Low Stock</div></div>
+              <div class="welcome-stat"><div class="val">4</div><div class="lbl">Alerts</div></div>
+            </div>
+          </div>
+
+          <div class="stat-grid stat-grid-4">
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--blue-500)"></div>
+              <div class="stat-icon-wrap" style="background:var(--blue-50)">📦</div>
+              <div class="stat-label">Total Appliances</div>
+              <div class="stat-value" style="color:var(--blue-600)">248</div>
+              <div class="stat-change up">↑ 12 added this week</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--green)"></div>
+              <div class="stat-icon-wrap" style="background:var(--green-bg)">✅</div>
+              <div class="stat-label">Good Condition</div>
+              <div class="stat-value" style="color:var(--green)">189</div>
+              <div class="stat-change neutral">76% of total inventory</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--yellow)"></div>
+              <div class="stat-icon-wrap" style="background:var(--yellow-bg)">⚠️</div>
+              <div class="stat-label">Low Stock Items</div>
+              <div class="stat-value" style="color:var(--yellow)">14</div>
+              <div class="stat-change down">↑ 3 since yesterday</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--red)"></div>
+              <div class="stat-icon-wrap" style="background:var(--red-bg)">🔧</div>
+              <div class="stat-label">For Repair / Defective</div>
+              <div class="stat-value" style="color:var(--red)">21</div>
+              <div class="stat-change down">Needs immediate attention</div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📈 Stock Movement — This Week</div>
+                <span class="card-action" onclick="navigate(document.querySelector('[data-page=transactions]'))">View All →</span>
+              </div>
+              <div class="bar-chart-wrap">
+                <div class="bar-col"><div class="bar-fill" style="height:60%;background:var(--blue-400)"></div><div class="bar-day">Mon</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:80%;background:var(--blue-500)"></div><div class="bar-day">Tue</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:45%;background:var(--blue-400)"></div><div class="bar-day">Wed</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:95%;background:var(--blue-600)"></div><div class="bar-day">Thu</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:70%;background:var(--blue-500)"></div><div class="bar-day">Fri</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:35%;background:var(--blue-300)"></div><div class="bar-day">Sat</div></div>
+                <div class="bar-col"><div class="bar-fill" style="height:15%;background:var(--gray-200)"></div><div class="bar-day">Sun</div></div>
+              </div>
+              <div class="chart-legend">
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--blue-500)"></div>Stock In</div>
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:var(--blue-300)"></div>Stock Out</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">🥧 Condition Breakdown</div></div>
+              <div class="donut-section">
+                <div class="donut-chart">
+                  <svg width="100" height="100" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--gray-100)" stroke-width="14"/>
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--green)" stroke-width="14" stroke-dasharray="152 87" stroke-linecap="round"/>
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--yellow)" stroke-width="14" stroke-dasharray="46 193" stroke-dashoffset="-152" stroke-linecap="round"/>
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--red)" stroke-width="14" stroke-dasharray="31 208" stroke-dashoffset="-198" stroke-linecap="round"/>
+                  </svg>
+                  <div class="donut-center"><div class="donut-val">248</div><div class="donut-lbl">Total</div></div>
+                </div>
+                <div class="donut-legend">
+                  <div class="donut-legend-item">
+                    <div class="donut-legend-left"><div class="donut-legend-dot" style="background:var(--green)"></div>Good / New</div>
+                    <div class="donut-legend-count">189</div>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div class="donut-legend-left"><div class="donut-legend-dot" style="background:var(--yellow)"></div>Fair / Repair</div>
+                    <div class="donut-legend-count">38</div>
+                  </div>
+                  <div class="donut-legend-item">
+                    <div class="donut-legend-left"><div class="donut-legend-dot" style="background:var(--red)"></div>Defective</div>
+                    <div class="donut-legend-count">21</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid-3">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🔄 Recent Transactions</div>
+                <span class="card-action" onclick="navigate(document.querySelector('[data-page=transactions]'))">See All →</span>
+              </div>
+              <div class="table-container">
+                <table>
+                  <thead><tr><th>Appliance</th><th>Type</th><th>Qty</th><th>Date</th></tr></thead>
+                  <tbody>
+                    <tr><td class="td-main">LG Refrigerator 2-Door</td><td><span class="pill pill-green">Stock In</span></td><td><strong>+5</strong></td><td class="text-muted">Today, 9:14am</td></tr>
+                    <tr><td class="td-main">Panasonic AC 1.5hp</td><td><span class="pill pill-red">Stock Out</span></td><td><strong>-2</strong></td><td class="text-muted">Today, 8:50am</td></tr>
+                    <tr><td class="td-main">Samsung Washing Machine</td><td><span class="pill pill-green">Stock In</span></td><td><strong>+3</strong></td><td class="text-muted">Yesterday</td></tr>
+                    <tr><td class="td-main">Sharp Microwave 20L</td><td><span class="pill pill-red">Stock Out</span></td><td><strong>-1</strong></td><td class="text-muted">Yesterday</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">🔔 Active Alerts</div>
+                <span class="card-action" onclick="navigate(document.querySelector('[data-page=alerts]'))">View All →</span>
+              </div>
+              <div class="activity-feed">
+                <div class="activity-item"><div class="activity-indicator" style="background:var(--red)"></div><div class="activity-body"><div class="activity-text">Fujidenzo Refrigerator — only <strong>2 units</strong> left</div><div class="activity-time">2 hours ago · Critical</div></div></div>
+                <div class="activity-item"><div class="activity-indicator" style="background:var(--yellow)"></div><div class="activity-body"><div class="activity-text">3 units flagged as <strong>Defective</strong> in Zone B</div><div class="activity-time">5 hours ago · Warning</div></div></div>
+                <div class="activity-item"><div class="activity-indicator" style="background:var(--yellow)"></div><div class="activity-body"><div class="activity-text">Carrier AC 1hp — low stock <strong>(5 units)</strong></div><div class="activity-time">Yesterday · Warning</div></div></div>
+                <div class="activity-item"><div class="activity-indicator" style="background:var(--blue-400)"></div><div class="activity-body"><div class="activity-text">Monthly stock <strong>report ready</strong> to generate</div><div class="activity-time">Yesterday · Info</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ APPLIANCES ══════════ -->
+        <div class="page" id="page-appliances">
+          <div class="section-header">
+            <div><div class="section-title">📋 Appliances</div><div class="section-sub">Manage all appliance records — add, edit, view, and remove units</div></div>
+            <button class="btn btn-primary">＋ Add Appliance</button>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <input class="search-input" placeholder="Search by name, brand, or SKU...">
+            </div>
+            <select class="filter-select"><option>All Categories</option><option>Refrigerator</option><option>Air Conditioner</option><option>Washing Machine</option><option>Microwave</option><option>Television</option><option>Electric Fan</option></select>
+            <select class="filter-select"><option>All Conditions</option><option>Brand New</option><option>Good</option><option>Fair</option><option>For Repair</option><option>Defective</option></select>
+            <select class="filter-select"><option>All Zones</option><option>Zone A</option><option>Zone B</option><option>Zone C</option></select>
+          </div>
+          <div class="card">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr><th>SKU</th><th>Appliance Name</th><th>Brand</th><th>Category</th><th>Stock</th><th>Condition</th><th>Location</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="text-muted font-bold">APL-001</td><td class="td-main">2-Door Refrigerator</td><td>LG</td><td><span class="pill pill-blue">Refrigerator</span></td><td><strong>12</strong></td><td><span class="pill pill-green">Brand New</span></td><td>Zone A / Shelf 1</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-002</td><td class="td-main">Window-Type AC 1hp</td><td>Carrier</td><td><span class="pill pill-blue">Air Conditioner</span></td><td><strong style="color:var(--yellow)">5</strong></td><td><span class="pill pill-yellow">Fair</span></td><td>Zone A / Shelf 2</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-003</td><td class="td-main">Top Load Washing Machine</td><td>Samsung</td><td><span class="pill pill-blue">Washing Machine</span></td><td><strong>8</strong></td><td><span class="pill pill-green">Good</span></td><td>Zone B / Shelf 1</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-004</td><td class="td-main">Smart TV 43"</td><td>Sony</td><td><span class="pill pill-purple">Television</span></td><td><strong>3</strong></td><td><span class="pill pill-green">Brand New</span></td><td>Zone C / Shelf 1</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-005</td><td class="td-main">Inverter AC 1.5hp</td><td>Panasonic</td><td><span class="pill pill-blue">Air Conditioner</span></td><td><strong style="color:var(--red)">2</strong></td><td><span class="pill pill-red">Defective</span></td><td>Zone B / Shelf 4</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-006</td><td class="td-main">Microwave Oven 20L</td><td>Sharp</td><td><span class="pill pill-gray">Microwave</span></td><td><strong>7</strong></td><td><span class="pill pill-orange">For Repair</span></td><td>Zone A / Shelf 3</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                  <tr><td class="text-muted font-bold">APL-007</td><td class="td-main">Stand Fan 16"</td><td>Hanabishi</td><td><span class="pill pill-gray">Electric Fan</span></td><td><strong>14</strong></td><td><span class="pill pill-green">Good</span></td><td>Zone C / Shelf 3</td><td><div class="flex gap-8"><button class="btn btn-secondary btn-sm">✏️ Edit</button><button class="btn btn-danger btn-sm">🗑️</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ ZONES & SHELVES ══════════ -->
+        <div class="page" id="page-zones">
+          <div class="section-header">
+            <div><div class="section-title">🗂️ Zones & Shelves</div><div class="section-sub">Physical storage map — track where each appliance unit is located</div></div>
+            <button class="btn btn-primary">＋ Add Zone</button>
+          </div>
+          <div class="stat-grid stat-grid-3" style="margin-bottom:24px">
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--blue-500)"></div>
+              <div class="stat-icon-wrap" style="background:var(--blue-50)">🅰️</div>
+              <div class="stat-label">Zone A</div>
+              <div class="stat-value" style="color:var(--blue-600)">84</div>
+              <div class="stat-change neutral">Refrigerators, ACs, Microwaves</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--purple)"></div>
+              <div class="stat-icon-wrap" style="background:var(--purple-bg)">🅱️</div>
+              <div class="stat-label">Zone B</div>
+              <div class="stat-value" style="color:var(--purple)">63</div>
+              <div class="stat-change neutral">Washing Machines, Dryers</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-accent" style="background:var(--green)"></div>
+              <div class="stat-icon-wrap" style="background:var(--green-bg)">🅲</div>
+              <div class="stat-label">Zone C</div>
+              <div class="stat-value" style="color:var(--green)">101</div>
+              <div class="stat-change neutral">TVs, Fans, Small Appliances</div>
+            </div>
+          </div>
+
+          <div class="zone-grid">
+            <div class="zone-card">
+              <div class="zone-card-header">
+                <div class="zone-card-name">🅰️ Zone A — Large Appliances</div>
+                <div class="zone-card-count">84 units · 4 shelves</div>
+              </div>
+              <div class="zone-card-body">
+                <div class="shelf-row"><span class="shelf-name">Shelf 1 · Refrigerators</span><span class="shelf-count">12</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 2 · Air Conditioners</span><span class="shelf-count">5</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 3 · Microwaves</span><span class="shelf-count">7</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 4 · Mixed</span><span class="shelf-count">3</span></div>
+              </div>
+            </div>
+            <div class="zone-card">
+              <div class="zone-card-header">
+                <div class="zone-card-name">🅱️ Zone B — Laundry</div>
+                <div class="zone-card-count">63 units · 3 shelves</div>
+              </div>
+              <div class="zone-card-body">
+                <div class="shelf-row"><span class="shelf-name">Shelf 1 · Washing Machines</span><span class="shelf-count">8</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 2 · Dryers</span><span class="shelf-count">4</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 3 · For Repair Units</span><span class="shelf-count" style="color:var(--red)">6</span></div>
+              </div>
+            </div>
+            <div class="zone-card">
+              <div class="zone-card-header">
+                <div class="zone-card-name">🅲 Zone C — Electronics</div>
+                <div class="zone-card-count">101 units · 5 shelves</div>
+              </div>
+              <div class="zone-card-body">
+                <div class="shelf-row"><span class="shelf-name">Shelf 1 · Smart TVs</span><span class="shelf-count">3</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 2 · Regular TVs</span><span class="shelf-count">9</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 3 · Electric Fans</span><span class="shelf-count">14</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 4 · Rice Cookers</span><span class="shelf-count">11</span></div>
+                <div class="shelf-row"><span class="shelf-name">Shelf 5 · Misc Items</span><span class="shelf-count">8</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">📊 Condition Overview by Zone</div></div>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Zone</th><th>Brand New</th><th>Good</th><th>Fair</th><th>For Repair</th><th>Defective</th><th>Total</th></tr></thead>
+                <tbody>
+                  <tr><td class="td-main">Zone A</td><td><span class="pill pill-green">32</span></td><td><span class="pill pill-green">28</span></td><td><span class="pill pill-yellow">14</span></td><td><span class="pill pill-orange">7</span></td><td><span class="pill pill-red">3</span></td><td><strong>84</strong></td></tr>
+                  <tr><td class="td-main">Zone B</td><td><span class="pill pill-green">18</span></td><td><span class="pill pill-green">22</span></td><td><span class="pill pill-yellow">11</span></td><td><span class="pill pill-orange">6</span></td><td><span class="pill pill-red">6</span></td><td><strong>63</strong></td></tr>
+                  <tr><td class="td-main">Zone C</td><td><span class="pill pill-green">55</span></td><td><span class="pill pill-green">29</span></td><td><span class="pill pill-yellow">9</span></td><td><span class="pill pill-orange">4</span></td><td><span class="pill pill-red">4</span></td><td><strong>101</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ TRANSACTIONS ══════════ -->
+        <div class="page" id="page-transactions">
+          <div class="section-header">
+            <div><div class="section-title">🔄 Transactions</div><div class="section-sub">All stock-in and stock-out records with full details</div></div>
+            <button class="btn btn-primary">＋ Log Transaction</button>
+          </div>
+          <div class="stat-grid stat-grid-3" style="margin-bottom:20px">
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--green)"></div><div class="stat-icon-wrap" style="background:var(--green-bg)">📥</div><div class="stat-label">Stock In — This Month</div><div class="stat-value" style="color:var(--green)">+87</div><div class="stat-change up">↑ 14 vs last month</div></div>
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--red)"></div><div class="stat-icon-wrap" style="background:var(--red-bg)">📤</div><div class="stat-label">Stock Out — This Month</div><div class="stat-value" style="color:var(--red)">−54</div><div class="stat-change down">↑ 8 vs last month</div></div>
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--blue-500)"></div><div class="stat-icon-wrap" style="background:var(--blue-50)">📊</div><div class="stat-label">Net Change</div><div class="stat-value" style="color:var(--blue-600)">+33</div><div class="stat-change up">Positive this month</div></div>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap"><input class="search-input" placeholder="Search transactions..."></div>
+            <select class="filter-select"><option>All Types</option><option>Stock In</option><option>Stock Out</option></select>
+            <select class="filter-select"><option>All Staff</option><option>Meynard M.</option><option>Nesia A.</option><option>Louiza B.</option><option>Ghen T.</option></select>
+          </div>
+          <div class="card">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Ref #</th><th>Appliance</th><th>Type</th><th>Qty</th><th>Handled By</th><th>Notes</th><th>Date & Time</th></tr></thead>
+                <tbody>
+                  <tr><td class="text-muted font-bold">#T-041</td><td class="td-main">LG 2-Door Refrigerator</td><td><span class="pill pill-green">Stock In</span></td><td><strong style="color:var(--green)">+5</strong></td><td>Nesia A.</td><td class="text-muted">Delivery from supplier</td><td class="text-muted">May 19, 9:14am</td></tr>
+                  <tr><td class="text-muted font-bold">#T-040</td><td class="td-main">Panasonic AC 1.5hp</td><td><span class="pill pill-red">Stock Out</span></td><td><strong style="color:var(--red)">−2</strong></td><td>Meynard M.</td><td class="text-muted">Released to customer</td><td class="text-muted">May 19, 8:50am</td></tr>
+                  <tr><td class="text-muted font-bold">#T-039</td><td class="td-main">Samsung Washing Machine</td><td><span class="pill pill-green">Stock In</span></td><td><strong style="color:var(--green)">+3</strong></td><td>Louiza B.</td><td class="text-muted">Restocked from warehouse</td><td class="text-muted">May 18, 3:22pm</td></tr>
+                  <tr><td class="text-muted font-bold">#T-038</td><td class="td-main">Sharp Microwave 20L</td><td><span class="pill pill-red">Stock Out</span></td><td><strong style="color:var(--red)">−1</strong></td><td>Ghen T.</td><td class="text-muted">Transferred to branch</td><td class="text-muted">May 18, 1:05pm</td></tr>
+                  <tr><td class="text-muted font-bold">#T-037</td><td class="td-main">Sony Smart TV 43"</td><td><span class="pill pill-green">Stock In</span></td><td><strong style="color:var(--green)">+4</strong></td><td>Nesia A.</td><td class="text-muted">New stock arrival</td><td class="text-muted">May 17, 11:30am</td></tr>
+                  <tr><td class="text-muted font-bold">#T-036</td><td class="td-main">Carrier Window AC 1hp</td><td><span class="pill pill-red">Stock Out</span></td><td><strong style="color:var(--red)">−3</strong></td><td>Meynard M.</td><td class="text-muted">Released to customer</td><td class="text-muted">May 17, 9:00am</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ ACTIVITY LOGS ══════════ -->
+        <div class="page" id="page-logs">
+          <div class="section-header">
+            <div><div class="section-title">📝 Activity Logs</div><div class="section-sub">Complete history of all changes and actions performed in the system</div></div>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap"><input class="search-input" placeholder="Search logs..."></div>
+            <select class="filter-select"><option>All Actions</option><option>Added</option><option>Edited</option><option>Deleted</option><option>Login</option><option>Logout</option></select>
+            <select class="filter-select"><option>All Users</option><option>Meynard M.</option><option>Nesia A.</option><option>Louiza B.</option><option>Ghen T.</option></select>
+          </div>
+          <div class="card">
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Action</th><th>Description</th><th>Performed By</th><th>Date & Time</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="pill pill-green">Added</span></td><td class="td-main">Added new appliance: LG 2-Door Refrigerator (APL-001)</td><td>Meynard M.</td><td class="text-muted">May 19, 9:20am</td></tr>
+                  <tr><td><span class="pill pill-blue">Edited</span></td><td class="td-main">Updated condition of APL-005 from "Good" to "Defective"</td><td>Nesia A.</td><td class="text-muted">May 19, 8:45am</td></tr>
+                  <tr><td><span class="pill pill-green">Added</span></td><td class="td-main">Logged Stock In transaction #T-041 — 5 units (LG Refrigerator)</td><td>Nesia A.</td><td class="text-muted">May 19, 9:14am</td></tr>
+                  <tr><td><span class="pill pill-red">Deleted</span></td><td class="td-main">Archived inactive appliance record APL-009</td><td>Meynard M.</td><td class="text-muted">May 18, 4:10pm</td></tr>
+                  <tr><td><span class="pill pill-blue">Edited</span></td><td class="td-main">Reassigned APL-003 from Zone A / Shelf 1 to Zone B / Shelf 1</td><td>Louiza B.</td><td class="text-muted">May 18, 2:30pm</td></tr>
+                  <tr><td><span class="pill pill-purple">Login</span></td><td class="td-main">User Ghen T. signed into the system</td><td>Ghen T.</td><td class="text-muted">May 18, 8:00am</td></tr>
+                  <tr><td><span class="pill pill-gray">Logout</span></td><td class="td-main">User Louiza B. signed out of the system</td><td>Louiza B.</td><td class="text-muted">May 17, 5:30pm</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ ALERTS ══════════ -->
+        <div class="page" id="page-alerts">
+          <div class="section-header">
+            <div><div class="section-title">🔔 Alerts</div><div class="section-sub">System notifications that require your attention</div></div>
+            <button class="btn btn-secondary">Mark All as Read</button>
+          </div>
+          <div class="stat-grid stat-grid-3" style="margin-bottom:24px">
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--red)"></div><div class="stat-icon-wrap" style="background:var(--red-bg)">🚨</div><div class="stat-label">Critical</div><div class="stat-value" style="color:var(--red)">1</div><div class="stat-change down">Immediate action needed</div></div>
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--yellow)"></div><div class="stat-icon-wrap" style="background:var(--yellow-bg)">⚠️</div><div class="stat-label">Warnings</div><div class="stat-value" style="color:var(--yellow)">2</div><div class="stat-change neutral">Monitor closely</div></div>
+            <div class="stat-card"><div class="stat-card-accent" style="background:var(--blue-400)"></div><div class="stat-icon-wrap" style="background:var(--blue-50)">ℹ️</div><div class="stat-label">Info</div><div class="stat-value" style="color:var(--blue-500)">1</div><div class="stat-change neutral">For your awareness</div></div>
+          </div>
+          <div class="alert-feed">
+            <div class="alert-card critical">
+              <div class="alert-card-icon">🚨</div>
+              <div class="alert-card-content">
+                <div class="alert-card-title">Critical: Fujidenzo Refrigerator — Only 2 Units Remaining</div>
+                <div class="alert-card-desc">Stock has fallen critically below the minimum threshold of 5 units. Immediate restocking is recommended to prevent a complete stockout. Contact your supplier as soon as possible.</div>
+                <div class="alert-card-time">Triggered: May 19, 2026 at 7:00am</div>
+                <div class="alert-card-actions">
+                  <button class="btn btn-primary btn-sm">Request Restock</button>
+                  <button class="btn btn-secondary btn-sm">Dismiss</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert-card warning">
+              <div class="alert-card-icon">⚠️</div>
+              <div class="alert-card-content">
+                <div class="alert-card-title">Warning: 3 Units Flagged as Defective in Zone B</div>
+                <div class="alert-card-desc">Panasonic AC 1.5hp (2 units) and Sharp Microwave 20L (1 unit) have been marked as Defective. These units should be pulled out for repair assessment or disposed of accordingly.</div>
+                <div class="alert-card-time">Triggered: May 19, 2026 at 5:30am</div>
+                <div class="alert-card-actions">
+                  <button class="btn btn-secondary btn-sm">View Units</button>
+                  <button class="btn btn-secondary btn-sm">Dismiss</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert-card warning">
+              <div class="alert-card-icon">⚠️</div>
+              <div class="alert-card-content">
+                <div class="alert-card-title">Warning: Carrier AC 1hp — Low Stock (5 Units Remaining)</div>
+                <div class="alert-card-desc">Current stock is at the minimum threshold level. While not yet critical, it is advised to monitor this item closely and prepare a restock request if demand continues.</div>
+                <div class="alert-card-time">Triggered: May 18, 2026 at 3:00pm</div>
+                <div class="alert-card-actions">
+                  <button class="btn btn-secondary btn-sm">View Item</button>
+                  <button class="btn btn-secondary btn-sm">Dismiss</button>
+                </div>
+              </div>
+            </div>
+            <div class="alert-card info">
+              <div class="alert-card-icon">📊</div>
+              <div class="alert-card-content">
+                <div class="alert-card-title">Info: Monthly Stock Report is Ready to Generate</div>
+                <div class="alert-card-desc">The system has compiled the May 2026 inventory data. Head to the Reports section to generate and download your monthly stock summary report.</div>
+                <div class="alert-card-time">Triggered: May 18, 2026 at 12:00am</div>
+                <div class="alert-card-actions">
+                  <button class="btn btn-primary btn-sm" onclick="navigate(document.querySelector('[data-page=reports]'))">Go to Reports</button>
+                  <button class="btn btn-secondary btn-sm">Dismiss</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ REPORTS ══════════ -->
+        <div class="page" id="page-reports">
+          <div class="section-header">
+            <div><div class="section-title">📊 Reports</div><div class="section-sub">Generate and export summaries of your inventory data</div></div>
+          </div>
+          <div class="report-grid">
+            <div class="report-card"><div class="report-card-icon">📦</div><div class="report-card-name">Stock Summary Report</div><div class="report-card-desc">Total inventory per appliance, category, and condition tier</div></div>
+            <div class="report-card"><div class="report-card-icon">🔄</div><div class="report-card-name">Transaction History Report</div><div class="report-card-desc">All stock-in and stock-out records within a selected date range</div></div>
+            <div class="report-card"><div class="report-card-icon">🔧</div><div class="report-card-name">Defective Units Report</div><div class="report-card-desc">Complete list of appliances marked For Repair or Defective</div></div>
+            <div class="report-card"><div class="report-card-icon">⚠️</div><div class="report-card-name">Low Stock Report</div><div class="report-card-desc">All items currently at or below minimum stock threshold</div></div>
+            <div class="report-card"><div class="report-card-icon">🗂️</div><div class="report-card-name">Zone & Shelf Report</div><div class="report-card-desc">Inventory summary per zone and shelf location</div></div>
+            <div class="report-card"><div class="report-card-icon">👤</div><div class="report-card-name">User Activity Report</div><div class="report-card-desc">Summary of actions performed by each staff member</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚡ Generate Report</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:flex-end">
+              <div><label class="form-label-inline">Report Type</label>
+                <select class="form-ctrl"><option>Stock Summary</option><option>Transaction History</option><option>Defective Units</option><option>Low Stock</option><option>Zone & Shelf</option><option>User Activity</option></select>
+              </div>
+              <div><label class="form-label-inline">Date From</label><input type="date" class="form-ctrl" value="2026-05-01"></div>
+              <div><label class="form-label-inline">Date To</label><input type="date" class="form-ctrl" value="2026-05-19"></div>
+              <button class="btn btn-primary" style="height:42px">📄 Generate PDF</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ SETTINGS ══════════ -->
+        <div class="page" id="page-settings">
+          <div class="section-header">
+            <div><div class="section-title">⚙️ Settings</div><div class="section-sub">Manage system preferences, users, and account settings</div></div>
+          </div>
+          <div class="settings-layout">
+            <div>
+              <div class="settings-nav">
+                <div class="settings-nav-item active" onclick="switchSettings(this,'general')">🏢 General</div>
+                <div class="settings-nav-item" onclick="switchSettings(this,'notifications')">🔔 Notifications</div>
+                <div class="settings-nav-item" onclick="switchSettings(this,'users')">👥 Users</div>
+                <div class="settings-nav-item" onclick="switchSettings(this,'security')">🔒 Security</div>
+              </div>
+            </div>
+            <div>
+              <!-- General -->
+              <div class="settings-panel active" id="settings-general">
+                <div class="card">
+                  <div class="settings-section">
+                    <div class="settings-section-title">System Information</div>
+                    <div class="settings-grid-2">
+                      <div class="form-group-inline"><label class="form-label-inline">System Name</label><input class="form-ctrl" value="InvenTech"></div>
+                      <div class="form-group-inline"><label class="form-label-inline">Store / Company Name</label><input class="form-ctrl" value="ABC Appliance Store"></div>
+                      <div class="form-group-inline"><label class="form-label-inline">Low Stock Threshold (default)</label><input class="form-ctrl" type="number" value="5"></div>
+                      <div class="form-group-inline"><label class="form-label-inline">System Version</label><input class="form-ctrl" value="v1.0.0" readonly style="background:var(--gray-50);color:var(--gray-400)"></div>
+                    </div>
+                  </div>
+                  <button class="btn btn-primary">Save Changes</button>
+                </div>
+              </div>
+              <!-- Notifications -->
+              <div class="settings-panel" id="settings-notifications">
+                <div class="card">
+                  <div class="settings-section-title">Alert Preferences</div>
+                  <div class="toggle-row"><div class="toggle-info"><div class="t-name">Low Stock Alerts</div><div class="t-desc">Notify when an item falls below the minimum stock threshold</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+                  <div class="toggle-row"><div class="toggle-info"><div class="t-name">Defective Unit Alerts</div><div class="t-desc">Notify when a unit is marked as Defective or For Repair</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+                  <div class="toggle-row"><div class="toggle-info"><div class="t-name">Monthly Report Reminder</div><div class="t-desc">Remind admin to generate report at the end of each month</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+                  <div class="toggle-row"><div class="toggle-info"><div class="t-name">Login Activity Notifications</div><div class="t-desc">Log and notify when users sign in or out of the system</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+                </div>
+              </div>
+              <!-- Users -->
+              <div class="settings-panel" id="settings-users">
+                <div class="card">
+                  <div class="card-header"><div class="card-title">System Users</div><button class="btn btn-primary btn-sm">＋ Add User</button></div>
+                  <div class="table-container">
+                    <table>
+                      <thead><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+                      <tbody>
+                        <tr><td class="td-main">Mojello, Meynard</td><td class="text-muted">meynard.m</td><td><span class="pill pill-blue">Administrator</span></td><td><span class="pill pill-green">Active</span></td><td>—</td></tr>
+                        <tr><td class="td-main">Adao, Dionesia</td><td class="text-muted">nesia.a</td><td><span class="pill pill-gray">Staff</span></td><td><span class="pill pill-green">Active</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                        <tr><td class="td-main">Beñares, Louiza</td><td class="text-muted">louiza.b</td><td><span class="pill pill-gray">Staff</span></td><td><span class="pill pill-green">Active</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                        <tr><td class="td-main">Tinapay, Ghenly</td><td class="text-muted">ghen.t</td><td><span class="pill pill-gray">Staff</span></td><td><span class="pill pill-green">Active</span></td><td><button class="btn btn-secondary btn-sm">Edit</button></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- Security -->
+              <div class="settings-panel" id="settings-security">
+                <div class="card">
+                  <div class="settings-section-title">Change Password</div>
+                  <div style="max-width:400px">
+                    <div class="form-group-inline"><label class="form-label-inline">Current Password</label><input class="form-ctrl" type="password" placeholder="Enter current password"></div>
+                    <div class="form-group-inline"><label class="form-label-inline">New Password</label><input class="form-ctrl" type="password" placeholder="Enter new password"></div>
+                    <div class="form-group-inline"><label class="form-label-inline">Confirm New Password</label><input class="form-ctrl" type="password" placeholder="Confirm new password"></div>
+                    <button class="btn btn-primary">Update Password</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
+</div><!-- /app -->
+
+<script>
+  /* ── Page titles ── */
+  const pageMeta = {
+    dashboard:    { title: 'Dashboard',      section: 'Overview' },
+    appliances:   { title: 'Appliances',     section: 'Inventory' },
+    zones:        { title: 'Zones & Shelves',section: 'Inventory' },
+    transactions: { title: 'Transactions',   section: 'Records' },
+    logs:         { title: 'Activity Logs',  section: 'Records' },
+    alerts:       { title: 'Alerts',         section: 'Monitoring' },
+    reports:      { title: 'Reports',        section: 'Monitoring' },
+    settings:     { title: 'Settings',       section: 'System' },
+  };
+
+  /* ── Login ── */
+  function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    const err = document.getElementById('login-error');
+    if (!u || !p) { err.style.display = 'block'; return; }
+    err.style.display = 'none';
+    // Set display name from username
+    const display = u.charAt(0).toUpperCase() + u.slice(1);
+    const initials = u.slice(0,2).toUpperCase();
+    document.getElementById('sidebar-name').textContent = display;
+    document.getElementById('sidebar-avatar').textContent = initials;
+    document.getElementById('topbar-name').textContent = display;
+    document.getElementById('topbar-avatar').textContent = initials;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  function doLogout() {
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+  }
+
+  document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  /* ── Navigation ── */
+  function navigate(el) {
+    const page = el.dataset.page;
+    if (!page) return;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.querySelector(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+    const meta = pageMeta[page];
+    if (meta) {
+      document.getElementById('topbar-title').textContent = meta.title;
+      document.getElementById('topbar-section').textContent = meta.section;
+    }
+    window.scrollTo(0, 0);
+  }
+
+  /* ── Settings tabs ── */
+  function switchSettings(el, panel) {
+    document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('settings-' + panel).classList.add('active');
+  }
+</script>
+</body>
+</html>

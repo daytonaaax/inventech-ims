@@ -1,6 +1,6 @@
-<h1 style="text-align: center;">ADBMS Project: InvenTech</h1>
+<h1 style="align: center;">ADBMS Project: InvenTech</h1>
 
-<p style="text-align: center; font-size: 18px"><b>Project Description</b></p>
+<p style="align: center; font-size: 18px"><b>Project Description</b></p>
 
 InvenTech is an <b> Inventory Management System</b> made specifically for <b>Appliance Stores</b>. It offers core features depending on the store's needs, such as <b>Inventory</b>, <b>Appliances</b>, <b>Categories</b>, <b>Zones and Shelves</b>, <b>Transactions</b>, <b>Alerts</b>, and <b>Reports</b>.
 
@@ -11,7 +11,7 @@ The development of this project was assisted by <b><a href="claude.ai">Claude AI
 This project has been proposed and reviewed for a final project on ADBMS course.
 
 
-<h3 style="text-align: center;">Features</h3><hr>
+<h3 style="align: center;">Features</h3><hr>
 <br>
 <ul>
     <li><b>Inventory</b> - for a quick overview of the inventory and transactions</li>
@@ -26,7 +26,7 @@ This project has been proposed and reviewed for a final project on ADBMS course.
 
 <br>
 
-<h3 style="text-align: center;">Changelogs</h3><hr>
+<h3 style="align: center;">Changelogs</h3><hr>
 <p>Changes weren't shown early in the commits history, GitHub was used late in the development process. But here are the changelogs:</p>
 <ul>
     <li><b>v1.8.4</b> (Patch) - Integrated custom confirmation modals for Clear Image Cache in Danger Zone.</li>
@@ -64,7 +64,7 @@ This project has been proposed and reviewed for a final project on ADBMS course.
 
 <br>
 
-<h3 style="text-align: center;">Tools and Technologies Used</h3><hr>
+<h3 style="align: center;">Tools and Technologies Used</h3><hr>
 
 <table>
     <thead>
@@ -117,7 +117,7 @@ This project has been proposed and reviewed for a final project on ADBMS course.
 
 <br>
 
-<h3 style="text-align: center;">About Us: Team Members</h3><hr>
+<h3 style="align: center;">About Us: Team Members</h3><hr>
 We are students from <b>BSCS 2-2</b> at <b>Cavite State University</b>. We have consistently worked together as a team for every development opportunity provided by our courses and instructors since the very beginning. Special thanks to the following members for their dedication since Day 1.
 <p>
     <ul>
@@ -134,4 +134,4 @@ Finally, we would like to thank <b>Mr. Mark Mina</b>, our ADBMS instructor at Ca
 <hr>
 <br>
 
-<p style="text-align: center;"> ★ Made by <a href="https://github.com/daytonaaax">daytonaaax </a>★</p>
+<p style="align: center;"> ★ Made by <a href="https://github.com/daytonaaax">daytonaaax </a>★</p>
